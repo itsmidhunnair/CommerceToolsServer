@@ -5,9 +5,13 @@ const apiRoot = require("../../config/commercetools/clientApiRoot");
  *
  * @returns {results}
  */
-const fetchAllProducts = async () => {
+const fetchAllProducts = async (search) => {
   try {
-    const data = await apiRoot.productProjections().get().execute();
+    const data = await apiRoot
+      .productProjections()
+      .search()
+      .get({ queryArgs: { "text.en": search } })
+      .execute();
     return data.body.results;
   } catch (error) {
     console.log(error);
@@ -36,4 +40,26 @@ const fetchProductById = async (id) => {
   }
 };
 
-module.exports = { fetchAllProducts, fetchProductById };
+/**
+ * To get Suggestion for Products from String
+ *
+ * @param {String} - ID
+ *
+ * @returns {results} - Specific Product
+ */
+const suggestProducts = async (search) => {
+  try {
+    const data = await apiRoot
+      .productProjections()
+      .suggest()
+      .get({ queryArgs: { fuzzy: true, "searchKeywords.en": `${search}` } })
+      .execute();
+    const suggestion = data.body["searchKeywords.en"];
+    return suggestion;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+module.exports = { fetchAllProducts, fetchProductById, suggestProducts };

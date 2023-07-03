@@ -71,9 +71,16 @@ const typeDefs = `#graphql
     #     label: LabelValue!
     # }
 
+    # -------- For getting Product Suggestion
+
+    type Suggest{
+        text: String
+    }
+
     type Query{
-        products: [Products!]
+        products(search:String): [Products!]
         product(id: ID!): Products 
+        suggest(search: String): [Suggest]
     }
 
 `;
