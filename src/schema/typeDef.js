@@ -83,6 +83,16 @@ const typeDefs = `#graphql
         suggest(search: String): [Suggest]
     }
 
+    input UserData{
+        email:String!
+        phone:String!
+    }
+
+    type Mutation{
+        checkUser(input:UserData): JSON
+        registerUser(token:String!): JSON
+    }
+
 `;
 
 module.exports = { typeDefs };

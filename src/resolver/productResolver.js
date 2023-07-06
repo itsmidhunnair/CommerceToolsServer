@@ -4,7 +4,7 @@ const {
   suggestProducts,
 } = require("../services/commercetools/product.services");
 
-const resolvers = {
+const productResolver = {
   Query: {
     products: async (parent, { search = null }) => {
       try {
@@ -35,4 +35,4 @@ const resolvers = {
   },
 };
 
-module.exports = { resolvers };
+module.exports = { productResolver };
