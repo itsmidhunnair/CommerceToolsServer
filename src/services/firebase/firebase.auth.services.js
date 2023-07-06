@@ -3,6 +3,21 @@ const { firebaseAuth } = require("../../config/firebase/firebase.config");
 const { hashPassword } = require("../passwordHandling");
 
 /**
+ * To get User Details from the Received Token
+ *
+ * @param Token String
+ *
+ * @returns User Details
+ */
+const verifyToken = async (token) => {
+  try {
+    return await firebaseAuth.verifyIdToken(token);
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
  * To check if a phone number and Email is already registered in firebase or not
  *
  * @param {*} req
@@ -54,16 +69,18 @@ const checkUserExists = async ({ email, phone }) => {
  * Decode Token and register user to CommerceTools
  *
  * @param {String} Token
+ * @param {String} Password
  */
-const registerUser = async (token) => {
+const registerUser = async (token, password) => {
   try {
-    const details = await firebaseAuth.verifyIdToken(token);
-    console.log(details);
-    const password = await hashPassword(details.email);
+    const authToken = token.split(" ")[1];
+    const details = await verifyToken(authToken);
+    // const password = await hashPassword(details.email);
     const signupUser = {
       email: details.email,
       firstName: details.name,
-      password: password,
+      password,
+      // password: details.email,
       custom: {
         type: {
           key: "cutomer-more-details",
@@ -83,8 +100,33 @@ const registerUser = async (token) => {
     return { success: true, msg: "User Created in CommerceTools" };
   } catch (error) {
     console.log(error);
+    // firebaseAuth.deleteUser('')
     return { success: false, msg: error };
   }
 };
 
-module.exports = { checkUserExists, registerUser };
+/**
+ * Decode Firebase Token and LoginUser to Commercetools
+ *
+ * @param {String} Token
+ * @param {String} Password
+ */
+const loginUserToCT = async (token, password) => {
+  try {
+    const authToken = token.split(" ")[1];
+    const details = await verifyToken(authToken);
+    console.log(details.email);
+    // const password = await hashPassword(details.email);
+    console.log(password);
+    const data = await apiRoot
+      .me()
+      .login()
+      .post({ body: { email: details.email, password } })
+      .execute();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { checkUserExists, registerUser, loginUserToCT };

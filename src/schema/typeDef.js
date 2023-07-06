@@ -87,10 +87,16 @@ const typeDefs = `#graphql
         email:String!
         phone:String!
     }
+    
+    input AuthInputs{
+        token:String!
+        password:String!
+    }
 
     type Mutation{
         checkUser(input:UserData): JSON
-        registerUser(token:String!): JSON
+        registerUser(input:AuthInputs!): JSON
+        loginUser(input:AuthInputs!): JSON
     }
 
 `;
