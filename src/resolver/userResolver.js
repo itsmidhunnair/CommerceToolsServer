@@ -12,16 +12,15 @@ const userResolver = {
       console.log(result);
       return result;
     },
-    registerUser: async (parent, { input }) => {
-      console.log(input);
-      console.log(input.token);
-      const result = await registerUser(input.token, input.password);
+    registerUser: async (parent, { token }) => {
+      console.log(token);
+      const result = await registerUser(token);
       console.log(result);
       return result;
     },
-    loginUser: async (parent, { input }) => {
-      console.log(input);
-      const result = await loginUserToCT(input.token, input.password);
+    loginUser: async (parent, { token }) => {
+      console.log(token);
+      const result = await loginUserToCT(token);
       console.log(result);
       return result;
     },

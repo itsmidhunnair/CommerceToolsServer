@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const apiRoot = require("../../config/commercetools/clientApiRoot");
 const { firebaseAuth } = require("../../config/firebase/firebase.config");
 const { hashPassword } = require("../passwordHandling");
@@ -10,6 +11,7 @@ const { hashPassword } = require("../passwordHandling");
  * @returns User Details
  */
 const verifyToken = async (token) => {
+  console.log("--------------------- from FB ", token);
   try {
     return await firebaseAuth.verifyIdToken(token);
   } catch (error) {
@@ -69,17 +71,17 @@ const checkUserExists = async ({ email, phone }) => {
  * Decode Token and register user to CommerceTools
  *
  * @param {String} Token
- * @param {String} Password
  */
-const registerUser = async (token, password) => {
+const registerUser = async (token) => {
   try {
     const authToken = token.split(" ")[1];
     const details = await verifyToken(authToken);
     // const password = await hashPassword(details.email);
+    // const password = jwt.sign({ password: details.email }, process.env.JWT_KEY);
     const signupUser = {
       email: details.email,
       firstName: details.name,
-      password,
+      password: details.email,
       // password: details.email,
       custom: {
         type: {
@@ -99,6 +101,8 @@ const registerUser = async (token, password) => {
       .execute();
     return { success: true, msg: "User Created in CommerceTools" };
   } catch (error) {
+    // If user Creation is failed in CommerceTools then that user must be deleted from Firebase
+
     console.log(error);
     // firebaseAuth.deleteUser('')
     return { success: false, msg: error };
@@ -109,21 +113,26 @@ const registerUser = async (token, password) => {
  * Decode Firebase Token and LoginUser to Commercetools
  *
  * @param {String} Token
- * @param {String} Password
  */
-const loginUserToCT = async (token, password) => {
+const loginUserToCT = async (token) => {
   try {
     const authToken = token.split(" ")[1];
     const details = await verifyToken(authToken);
     console.log(details.email);
     // const password = await hashPassword(details.email);
-    console.log(password);
+    // const password = jwt.sign({ password: details.email }, process.env.JWT_KEY);
+    // console.log(password);
     const data = await apiRoot
       .me()
       .login()
-      .post({ body: { email: details.email, password } })
+      .post({ body: { email: details.email, password: details.email } })
       .execute();
-    return data;
+    // const data = await apiRoot
+    //   .login()
+    //   .post({ body: { email: details.email, password } })
+    //   .execute();
+    console.log(data);
+    return data.body.customer;
   } catch (error) {
     console.log(error);
   }
