@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const apiRoot = require("../../config/commercetools/clientApiRoot");
 const { firebaseAuth } = require("../../config/firebase/firebase.config");
-const { hashPassword } = require("../passwordHandling");
 
 /**
  * To get User Details from the Received Token
@@ -73,9 +72,9 @@ const checkUserExists = async ({ email, phone }) => {
  * @param {String} Token
  */
 const registerUser = async (token) => {
+  const authToken = token.split(" ")[1];
+  const details = await verifyToken(authToken);
   try {
-    const authToken = token.split(" ")[1];
-    const details = await verifyToken(authToken);
     // const password = await hashPassword(details.email);
     // const password = jwt.sign({ password: details.email }, process.env.JWT_KEY);
     const signupUser = {
@@ -102,8 +101,12 @@ const registerUser = async (token) => {
     return { success: true, msg: "User Created in CommerceTools" };
   } catch (error) {
     // If user Creation is failed in CommerceTools then that user must be deleted from Firebase
-
     console.log(error);
+    const deleteUser = await firebaseAuth.deleteUser(details.uid);
+    console.log(
+      deleteUser,
+      "------------ User Deleted Successfully from firebase"
+    );
     // firebaseAuth.deleteUser('')
     return { success: false, msg: error };
   }
