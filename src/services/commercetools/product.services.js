@@ -1,5 +1,4 @@
 const apiRoot = require("../../config/commercetools/clientApiRoot");
-
 /**
  * To fetch all productProjections
  *

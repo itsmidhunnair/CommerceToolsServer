@@ -159,6 +159,14 @@
     "@commercetools/sdk-middleware-http" "^7.0.0"
     "@commercetools/sdk-middleware-logger" "^3.0.0"
 
+"@commercetools/sdk-auth@^4.0.1":
+  "integrity" "sha512-P/3LHeWBMHJXw2SVBHyjiHFBVqjYxSmPPVQzJOBzYkfPIH1HHHqyptfg9o7N+PmmIp27VIfPikeLSv6iZPYa1g=="
+  "resolved" "https://registry.npmjs.org/@commercetools/sdk-auth/-/sdk-auth-4.0.1.tgz"
+  "version" "4.0.1"
+  dependencies:
+    "@commercetools/sdk-middleware-http" "^7.0.0"
+    "qss" "2.0.3"
+
 "@commercetools/sdk-client-v2@^2.1.6", "@commercetools/sdk-client-v2@^2.2.0":
   "integrity" "sha512-/j/hINnuh3gdBeMrHUvuSZo+8nkckCHK3Nu6m3/ZkUqVkamRheU5ve/DlALvYpjs2XS2BdWTs1+Wsyyz1+x6iQ=="
   "resolved" "https://registry.npmjs.org/@commercetools/sdk-client-v2/-/sdk-client-v2-2.2.0.tgz"
@@ -2396,6 +2404,11 @@
   "version" "6.11.0"
   dependencies:
     "side-channel" "^1.0.4"
+
+"qss@2.0.3":
+  "integrity" "sha512-j48ZBT5IZbSqJiSU8EX4XrN8nXiflHvmMvv2XpFc31gh7n6EpSs75bNr6+oj3FOLWyT8m09pTmqLNl34L7/uPQ=="
+  "resolved" "https://registry.npmjs.org/qss/-/qss-2.0.3.tgz"
+  "version" "2.0.3"
 
 "range-parser@~1.2.1":
   "integrity" "sha512-Hrgsx+orqoygnmhFbKaHE6c296J+HTAQXoxEF6gNupROmmGJRoyzfG3ccAveqCBrwr/2yxQ5BVd/GTl5agOwSg=="

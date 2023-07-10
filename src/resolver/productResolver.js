@@ -6,7 +6,8 @@ const {
 
 const productResolver = {
   Query: {
-    products: async (parent, { search = null }) => {
+    products: async (parent, { search = null }, { token }) => {
+      console.log(token);
       try {
         const result = await fetchAllProducts(search);
         return result;
