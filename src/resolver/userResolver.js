@@ -49,7 +49,7 @@ const userResolver = {
         console.log(email);
         const result = await loginUserToCT({ email });
         console.log(result);
-        res.cookie("token", result.access_token, { httpOnly: true });
+        res.cookie("token", result.access_token, { httpOnly: true, sameSite:"None", secure: true});
         return {
           success: true,
           msg: "User Loggedin Successfully!",
