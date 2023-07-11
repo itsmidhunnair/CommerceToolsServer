@@ -46,6 +46,8 @@ const startServer = async () => {
     cors({
       origin: process.env.CLIENT_URL,
       credentials: true,
+      secure: true,
+      sameSite: "none",
     }),
     express.json(),
     expressMiddleware(server, {
