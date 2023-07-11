@@ -47,7 +47,10 @@ const checkUserExists = async ({ email, phone, uid }) => {
     };
   } catch (error) {
     console.log(error.code);
-    if (error.code === "auth/user-not-found") {
+    if (
+      error.code === "auth/user-not-found" ||
+      error.code === "auth/invalid-email"
+    ) {
       try {
         console.log("check phone");
         const checkByPhone = await firebaseAuth.getUserByPhoneNumber(phone);
