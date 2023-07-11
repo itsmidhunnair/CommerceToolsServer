@@ -1,4 +1,7 @@
-const { firebaseAuth } = require("../../config/firebase/firebase.config");
+const {
+  firebaseAuth,
+  firebaseApp,
+} = require("../../config/firebase/firebase.config");
 
 /**
  * To get User Details from the Received Token
@@ -16,9 +19,8 @@ const verifyToken = async (token) => {
   }
 };
 
-
-const deleteUser = async () => {
-  await firebaseAuth.deleteUser(details.uid);
+const deleteUser = async (uid) => {
+  await firebaseAuth.deleteUser(uid);
   console.log(
     deleteUser,
     "------------ User Deleted Successfully from firebase"
@@ -28,32 +30,40 @@ const deleteUser = async () => {
 /**
  * To check if a phone number and Email is already registered in firebase or not
  *
- * @param {*} req
- * @param {*} res
+ * @param {{uid:String,email:String,phone:String}}
  *
  */
-const checkUserExists = async ({ email, phone }) => {
+const checkUserExists = async ({ email, phone, uid }) => {
   try {
-    // const temp = await admin.auth().getUser("UUcjlSsQuxcRCtP1NYwNaWut4lq2");
     const checkByEmail = await firebaseAuth.getUserByEmail(email);
-    // const temp = await admin.auth().createUser(data);
-    console.log("Email", checkByEmail);
+    console.log(checkByEmail);
+    if (checkByEmail.providerData === 2) {
+      await deleteUser(uid);
+    }
     return {
       isExisting: true,
       error: "Email Already Used!",
       msg: "Please Login using Email and Password",
     };
   } catch (error) {
+    console.log(error.code);
     if (error.code === "auth/user-not-found") {
       try {
+        console.log("check phone");
         const checkByPhone = await firebaseAuth.getUserByPhoneNumber(phone);
+        console.log("check phone ----------", checkByPhone);
+
         return {
           isExisting: true,
           error: "Phone Number Already Used!",
           msg: "Please Login using Phone number and OTP",
         };
       } catch (error) {
-        if (error.code === "auth/user-not-found") {
+        console.log(error);
+        if (
+          error.code === "auth/user-not-found" ||
+          error.code === "auth/invalid-phone-number"
+        ) {
           return {
             isExisting: false,
             error: false,
@@ -84,9 +94,25 @@ const addEmailPassLogin = async ({ uid, email, password, name }) => {
   }
 };
 
+/**
+ * To Get user details by UID
+ *
+ * @params uid - String
+ *
+ * @returns {{name:String, email: String}}
+ */
+const getUserFromUIDandUpdateEmail = async (uid) => {
+  const userData = await firebaseAuth.getUser(uid);
+  const updatedData = await firebaseAuth.updateUser(uid, {
+    email: userData.providerData[0].email,
+  });
+  return { email: updatedData.email, name: updatedData.displayName };
+};
+
 module.exports = {
   checkUserExists,
   verifyToken,
   deleteUser,
   addEmailPassLogin,
+  getUserFromUIDandUpdateEmail,
 };
