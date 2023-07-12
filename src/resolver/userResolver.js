@@ -15,6 +15,15 @@ const {
   getUserFromUIDandUpdateEmail,
 } = require("../services/firebase/firebase.auth.services");
 
+/**
+ * All the Mutation Resolvers for User Authentication
+ * 1) checkUser - {input}
+ * 2) registerUser - {input}
+ * 3) loginUser - token
+ * 4) registerGoogleUser - token
+ *
+ * @type{}
+ */
 const userResolver = {
   Mutation: {
     // ----------- To check if a phone and email is present or not in firebase before signup ------------
@@ -105,7 +114,6 @@ const userResolver = {
             console.log(email);
             const result = await loginUserToCT({ email });
             res.cookie("token", result.access_token, cookieConfig);
-            
           } catch (error) {
             console.log(error);
             throw new GraphQLError(

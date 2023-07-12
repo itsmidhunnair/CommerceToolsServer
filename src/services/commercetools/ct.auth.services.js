@@ -1,5 +1,21 @@
 const apiRoot = require("../../config/commercetools/clientApiRoot");
 const { authClient } = require("../../config/commercetools/authClient");
+const bcrypt = require("bcrypt");
+const { hashPassword } = require("../passwordHandling");
+const { firebaseAuth } = require("../../config/firebase/firebase.config");
+
+
+// const demoFunc = async() => {
+//   const data = await firebaseAuth.createUser({ email: "varun@gmail.com" });
+//   console.log("🚀 ~ file: ct.auth.services.js:10 ~ demoFunc ~ data:", data)
+//   const result = await firebaseAuth.getUserByEmail("varun@gmail.com");
+//   console.log("🚀 ~ file: ct.auth.services.js:11 ~ demoFunc ~ result:", result)
+// }
+
+// demoFunc()
+
+
+
 
 /**
  * Register user to CommerceTools
@@ -9,12 +25,16 @@ const { authClient } = require("../../config/commercetools/authClient");
 const registerUserToCT = async ({ email, name, phone_number }) => {
   console.log(email, name, phone_number);
   try {
-    // const password = await hashPassword(details.email);
+    const password = await hashPassword(email);
+    console.log(
+      "🚀 ~ file: ct.auth.services.js:15 ~ registerUserToCT ~ password:",
+      password
+    );
     // const password = jwt.sign({ password: details.email }, process.env.JWT_KEY);
     const signupUser = {
       email: email,
       firstName: name,
-      password: email,
+      password: password,
       // password: details.email,
       custom: {
         type: {
@@ -48,10 +68,15 @@ const registerUserToCT = async ({ email, name, phone_number }) => {
  */
 const loginUserToCT = async ({ email }) => {
   try {
+    const password = await hashPassword(email);
+    console.log(
+      "🚀 ~ file: ct.auth.services.js:15 ~ registerUserToCT ~ password:",
+      password
+    );
     const data = await authClient.customerPasswordFlow(
       {
         username: email,
-        password: email,
+        password: password,
       },
       { disableRefreshToken: false }
     );

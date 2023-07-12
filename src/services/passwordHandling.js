@@ -1,12 +1,25 @@
 const bcrypt = require("bcrypt");
 
 /**
+ * To Generate a random SALT for encrypting password
+ */
+// const generateSalt = async () => {
+//   const salt = await bcrypt.genSalt(10);
+//   console.log(salt);
+// };
+
+// generateSalt();
+
+/**
  * To HASH PASSWORD
  * @param password - Normal Text password that is to be hashed
  * @returns Hash - Encrypted (hashed) Value
  */
 async function hashPassword(password) {
-  return await bcrypt.hash(password, 10).then((hash) => hash);
+  const hash = await bcrypt
+    .hash(password, `${process.env.ENC_SALT}`)
+    .then((hash) => hash);
+  return hash.replace(process.env.ENC_SALT, "");
 }
 
 /**
