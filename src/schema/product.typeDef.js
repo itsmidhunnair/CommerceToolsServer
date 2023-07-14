@@ -1,4 +1,4 @@
-const typeDefs = `#graphql
+const productTypeDefs = `#graphql
     
     # Scalar can be used to use dataTypes other than the default one
     # will be using JSON for 'Attributes' 
@@ -6,12 +6,15 @@ const typeDefs = `#graphql
     
     type Products {
      id: ID!,
+     productId: String
      name: name!
      slug: slug!
      metaDescription: name
     #  Fragmented - A Common Type is created for Variants and MasterVariants
      masterVariant: Variant!
      variants: [Variant]
+     variant: Variant
+     quantity: Int
     }
 
     # Name of product in different languages
@@ -19,6 +22,11 @@ const typeDefs = `#graphql
          en: String   
          de: String   
         }
+
+    # Main Total Price of Product based on qty (used in cart)
+    type Price{
+        value: PriceValues
+    }
 
     # slug in different languages
     type slug{
@@ -82,27 +90,6 @@ const typeDefs = `#graphql
         product(id: ID!): Products 
         suggest(search: String): [Suggest]
     }
-
-    input UserData{
-        access_token: String
-        email:String
-        phone:String
-    }    
-
-    input UserRegister{
-        token: String!,
-        email:String!,
-        password:String!,
-        name:String!,
-    }
-
-    type Mutation{
-        checkUser(input:UserData): JSON
-        registerUser(input:UserRegister!): JSON
-        registerGoogleUser(token:String!): JSON
-        loginUser(token:String!): JSON
-    }
-
 `;
 
-module.exports = { typeDefs };
+module.exports = [productTypeDefs];

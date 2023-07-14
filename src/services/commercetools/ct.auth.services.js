@@ -1,9 +1,8 @@
-const apiRoot = require("../../config/commercetools/clientApiRoot");
 const { authClient } = require("../../config/commercetools/authClient");
 const bcrypt = require("bcrypt");
 const { hashPassword } = require("../passwordHandling");
 const { firebaseAuth } = require("../../config/firebase/firebase.config");
-
+const { apiRoot } = require("../../config/commercetools/clientApiRoot");
 
 // const demoFunc = async() => {
 //   const data = await firebaseAuth.createUser({ email: "varun@gmail.com" });
@@ -14,22 +13,14 @@ const { firebaseAuth } = require("../../config/firebase/firebase.config");
 
 // demoFunc()
 
-
-
-
 /**
  * Register user to CommerceTools
  *
  * @param {{email:String, name:String, phone_number:String}} Token
  */
 const registerUserToCT = async ({ email, name, phone_number }) => {
-  console.log(email, name, phone_number);
   try {
     const password = await hashPassword(email);
-    console.log(
-      "🚀 ~ file: ct.auth.services.js:15 ~ registerUserToCT ~ password:",
-      password
-    );
     // const password = jwt.sign({ password: details.email }, process.env.JWT_KEY);
     const signupUser = {
       email: email,

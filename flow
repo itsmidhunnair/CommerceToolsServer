@@ -1,1 +1,5 @@
-create Cart with anonmous_id > update cart with product > Add shipping addr in cart > Create Order > .then >>>> Create customer with 
+create Cart with anonmous_id
+> update cart with product
+> Add shipping addr in cart
+> Create Order
+> .then >>>> Create customer with 

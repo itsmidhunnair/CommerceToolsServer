@@ -5,7 +5,6 @@ const {
 } = require("../services/commercetools/product.services");
 
 const productResolver = {
-  Query: {
     products: async (parent, { search = null }, { token }) => {
       console.log(token);
       try {
@@ -33,7 +32,6 @@ const productResolver = {
         console.log(error);
       }
     },
-  },
 };
 
 module.exports = { productResolver };

@@ -9,12 +9,12 @@ const http = require("http");
 const cors = require("cors");
 
 const { expressMiddleware } = require("@apollo/server/express4");
-
+const { graphqlContext } = require("./src/config/graphql/server.context");
 // const { startStandaloneServer } = require("@apollo/server/standalone");
 
 const dotenv = require("dotenv").config();
+const { typeDefs } = require("./src/schema");
 const { resolvers } = require("./src/resolver");
-const { typeDefs } = require("./src/schema/typeDef");
 
 // ---------------- GQL Standalone Server Initiate (Custom CORS and Cookie not supported) ----------------
 
@@ -49,10 +49,7 @@ const startServer = async () => {
     }),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req, res }) => ({
-        token: req.headers?.cookie?.split("=")[1],
-        res,
-      }),
+      context: graphqlContext,
     })
   );
 

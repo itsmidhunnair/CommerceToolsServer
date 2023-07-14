@@ -1,4 +1,4 @@
-const ctpClient = require("./buildClient");
+const { ctpClient, ctpAdminClient } = require("./buildClient");
 
 const {
   ApiRoot,
@@ -9,4 +9,10 @@ const apiRoot = createApiBuilderFromCtpClient(ctpClient).withProjectKey({
   projectKey: process.env.CTP_PROJECT_KEY,
 });
 
-module.exports = apiRoot;
+const adminApiRoot = createApiBuilderFromCtpClient(
+  ctpAdminClient
+).withProjectKey({
+  projectKey: process.env.CTP_PROJECT_KEY,
+});
+
+module.exports = { apiRoot, adminApiRoot };

@@ -22,6 +22,18 @@ const authMiddlewareOptions = {
 };
 
 /**
+ * CONFIGURING ADMIN AUTH MIDDLEWARE
+ */
+const adminAuthMiddleware = {
+  ...authMiddlewareOptions,
+  credentials: {
+    clientId: process.env.ADMIN_CTP_CLIENT_ID,
+    clientSecret: process.env.ADMIN_CTP_CLIENT_SECRET,
+  },
+  scopes: [`${process.env.ADMIN_CTP_SCOPES}`],
+};
+
+/**
  * Configure httpMiddlewareOptions
  */
 const httpMiddlewareOptions = {
@@ -39,4 +51,14 @@ const ctpClient = new ClientBuilder()
   .withLoggerMiddleware() // Include middleware for logging
   .build();
 
-module.exports = ctpClient;
+/**
+ * Export the AdminClientBuilder
+ */
+const ctpAdminClient = new ClientBuilder()
+  .withProjectKey(projectKey) // .withProjectKey() is not required if the projectKey is included in authMiddlewareOptions
+  .withClientCredentialsFlow(adminAuthMiddleware)
+  .withHttpMiddleware(httpMiddlewareOptions)
+  .withLoggerMiddleware() // Include middleware for logging
+  .build();
+
+module.exports = { ctpClient, ctpAdminClient };
