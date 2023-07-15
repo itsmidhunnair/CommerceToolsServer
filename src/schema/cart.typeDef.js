@@ -7,23 +7,31 @@ input CartData{
     quantity: Int
 }
 
-type LineItems{
-    anonymousId: String!
-    lineItems: [Products]
-    totalPrice: PriceValues
-    totalLineItemQuantity: Int!
-}
-
 input DeleteItemFromCart{
     cart_id: String!
     version: Int!
     item_id: String!
 }
 
+type LineItems{
+    anonymousId: String!
+    lineItems: [Products]
+    totalPrice: PriceValues
+    totalLineItemQuantity: Int
+}
+
+type CartResponse{
+    id: ID!
+    version: Int
+    lineItems: [Products]
+    totalPrice: PriceValues
+}
+
+
 type Mutation{
-    addToCart(input:CartData): JSON
+    addToCart(input:CartData): CartResponse
     fetchCart(cart_id:String): LineItems
-    deleteFromCart(input: DeleteItemFromCart): JSON
+    deleteFromCart(input: DeleteItemFromCart): CartResponse
 }
 `;
 

@@ -123,7 +123,12 @@ const getLineItems = async (id) => {
  * @param {{cart_id:String, version:Int, lineItem_id:String}}
  */
 const deleteLineItem = async ({ cart_id, version, lineItem_id }) => {
-  console.log("🚀 ~ file: ct.cart.services.js:126 ~ deleteLineItem ~ cart_id, version, lineItem_id:", cart_id, version, lineItem_id)
+  console.log(
+    "🚀 ~ file: ct.cart.services.js:126 ~ deleteLineItem ~ cart_id, version, lineItem_id:",
+    cart_id,
+    version,
+    lineItem_id
+  );
   try {
     const { body } = await adminApiRoot
       .carts()
@@ -133,17 +138,19 @@ const deleteLineItem = async ({ cart_id, version, lineItem_id }) => {
           version: version,
           actions: [
             {
-              action: "removeCustomLineItem",
-              customLineItemId: lineItem_id,
+              action: "removeLineItem",
+              lineItemId: lineItem_id,
             },
           ],
         },
       })
       .execute();
-    console.log(
-      "🚀 ~ file: ct.cart.services.js:140 ~ deleteLineItem ~ body:",
-      body
-    );
+    return {
+      id: body.id,
+      version: body.version,
+      lineItems: body.lineItems,
+      totalPrice: body.totalPrice,
+    };
   } catch (error) {
     console.log(
       "🚀 ~ file: ct.cart.services.js:141 ~ deleteLineItem ~ error:",
