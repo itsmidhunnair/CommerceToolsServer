@@ -66,14 +66,17 @@ const userResolver = {
   // ----------- To Signup User ----------------------------
 
   // ----------- To Signin User ----------------------------
-  loginUser: async (parent, { token }, { res }) => {
-    console.log(token);
+  loginUser: async (parent, { token }, {cookies, res}) => {
+    console.log("🚀 ~ file: userResolver.js:70 ~ loginUser: ~ cookies:", cookies)
     try {
       const authToken = token.split(" ")[1];
       const { email, name } = await verifyToken(authToken);
       console.log(email);
       const result = await loginUserToCT({ email });
-      console.log(result);
+      console.log(
+        "🚀 ~ file: userResolver.js:77 ~ loginUser: ~ result:",
+        result
+      );
       res.cookie("token", result.access_token, cookieConfig);
       return {
         success: true,
@@ -81,6 +84,7 @@ const userResolver = {
         username: name,
       };
     } catch (error) {
+      console.log("🚀 ~ file: userResolver.js:84 ~ loginUser: ~ error:", error);
       throw {
         success: false,
         msg: error,
@@ -90,7 +94,7 @@ const userResolver = {
   // ----------- To Signin User ----------------------------
 
   // ----------- To verify if Google User is unique and Register to CommerceTools ----------------------------
-  registerGoogleUser: async (parent, { token }, { res }) => {
+  registerGoogleUser: async (parent, { token }, { req, res }) => {
     console.log(token);
     const access_token = token.split(" ")[1];
     const { uid } = await verifyToken(access_token);
@@ -104,15 +108,28 @@ const userResolver = {
         phone_number: "",
       });
       const result = await loginUserToCT({ email });
-
       res.cookie("token", result.access_token, cookieConfig);
       return result;
     } catch (error) {
       if (error.code === 400) {
         try {
-          console.log(email);
+          console.log(
+            "_________________________________________________________+++++++++++++"
+          );
+          console.log(
+            "🚀 ~ file: userResolver.js:114 ~ registerGoogleUser: ~ email:",
+            email
+          );
           const result = await loginUserToCT({ email });
+          console.log(
+            "🚀 ~ file: userResolver.js:116 ~ registerGoogleUser: ~ access_token:",
+            result.access_token
+          );
+          console.log(
+            "_________________________________________________________+++++++++++++"
+          );
           res.cookie("token", result.access_token, cookieConfig);
+          return result;
         } catch (error) {
           console.log(error);
           throw new GraphQLError(

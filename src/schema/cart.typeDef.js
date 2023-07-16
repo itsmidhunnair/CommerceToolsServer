@@ -7,10 +7,27 @@ input CartData{
     quantity: Int
 }
 
-input DeleteItemFromCart{
+input EditLineItem{
     cart_id: String!
     version: Int!
     item_id: String!
+    quantity: Int
+}
+
+input Address{
+    cart_id: String!
+    version: Int!
+    salutation: String
+    firstName: String!
+    lastName: String!
+    mobile: String!
+    email: String!
+    building: String!
+    streetName: String
+    state: String
+    city: String!
+    country: String
+    postalCode: String!
 }
 
 type LineItems{
@@ -32,7 +49,9 @@ type CartResponse{
 type Mutation{
     addToCart(input:CartData): CartResponse
     fetchCart(cart_id:String): LineItems
-    deleteFromCart(input: DeleteItemFromCart): CartResponse
+    deleteFromCart(input: EditLineItem): CartResponse
+    updateItemQty(input: EditLineItem): CartResponse
+    addShippingAddr(input: Address): JSON
 }
 `;
 

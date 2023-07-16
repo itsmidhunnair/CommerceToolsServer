@@ -1,4 +1,7 @@
-const { adminApiRoot } = require("../../config/commercetools/clientApiRoot");
+const {
+  adminApiRoot,
+  apiRoot,
+} = require("../../config/commercetools/clientApiRoot");
 
 const { v4: uuidv4 } = require("uuid");
 
@@ -102,14 +105,25 @@ const addProductToCart = async ({ sku, qty = 1, cart_id, version }) => {
 /**
  * To Line Items from cart ID
  *
- * @param {String} cart_id
+ * @param { cart_id, token }
  */
-const getLineItems = async (id) => {
+const getLineItems = async ({ cart_id, token }) => {
   try {
-    console.log("🚀 ~ file: ct.cart.services.js:107 ~ getLineItems ~ id:", id);
+    // if (token) {
+    //   const { body } = await apiRoot
+    //     .me()
+    //     .activeCart()
+    //     .get({ Authorization: { token: `Bearer ${token}` }, headers:{token: `Bearer ${token}`} })
+    //     .execute();
+    //   console.log(
+    //     "🚀 ~ file: ct.cart.services.js:117 ~ getLineItems ~ body:",
+    //     body
+    //   );
+    //   return body;
+    // }
     const { body } = await adminApiRoot
       .carts()
-      .withId({ ID: id })
+      .withId({ ID: cart_id })
       .get()
       .execute();
     return body;
@@ -124,12 +138,6 @@ const getLineItems = async (id) => {
  * @param {{cart_id:String, version:Int, lineItem_id:String}}
  */
 const deleteLineItem = async ({ cart_id, version, lineItem_id }) => {
-  console.log(
-    "🚀 ~ file: ct.cart.services.js:126 ~ deleteLineItem ~ cart_id, version, lineItem_id:",
-    cart_id,
-    version,
-    lineItem_id
-  );
   try {
     const { body } = await adminApiRoot
       .carts()
@@ -162,6 +170,103 @@ const deleteLineItem = async ({ cart_id, version, lineItem_id }) => {
 };
 
 /**
+ * To update line item quantity
+ *
+ * @param {{cart_id:String, version:Int, lineItem_id:String}}
+ */
+const updateLineItemQty = async ({
+  cart_id,
+  version,
+  lineItem_id,
+  quantity,
+}) => {
+  try {
+    const { body } = await adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version: version,
+          actions: [
+            {
+              action: "changeLineItemQuantity",
+              lineItemId: lineItem_id,
+              quantity: quantity,
+            },
+          ],
+        },
+      })
+      .execute();
+    return {
+      id: body.id,
+      version: body.version,
+      lineItems: body.lineItems,
+      totalPrice: body.totalPrice,
+      anonymousId: body.anonymousId,
+    };
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:141 ~ deleteLineItem ~ error:",
+      error
+    );
+  }
+};
+
+/**
+ * Update Shipping Address to Cart
+ * @param {{cart_id, version, building,city,country,email,firstName,lastName,mobile,postCode,salutation,state,streetName}}
+ */
+const addShippingAddress = async ({
+  cart_id,
+  version,
+  building,
+  city,
+  country,
+  email,
+  firstName,
+  lastName,
+  mobile,
+  postalCode,
+  salutation,
+  state,
+  streetName,
+}) => {
+  try {
+    const { body } = adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version,
+          actions: [
+            {
+              action: "setShippingAddress",
+              address: {
+                salutation,
+                firstName,
+                lastName,
+                email,
+                mobile,
+                building,
+                streetName,
+                city,
+                postalCode,
+                // state,
+                country,
+              },
+            },
+          ],
+        },
+      })
+      .execute();
+    console.log("🚀 ~ file: ct.cart.services.js:261 ~ body:", body);
+    return body;
+  } catch (error) {
+    console.log("🚀 ~ file: ct.cart.services.js:264 ~ error:", error);
+  }
+};
+
+/**
  * To Delete Cart Using Cart ID
  *
  * @param {String} [cart_id]
@@ -187,4 +292,6 @@ module.exports = {
   addProductToCart,
   getLineItems,
   deleteLineItem,
+  updateLineItemQty,
+  addShippingAddress,
 };

@@ -4,8 +4,18 @@ const {
   addProductToCart,
   getLineItems,
   deleteLineItem,
+  updateLineItemQty,
+  addShippingAddress,
 } = require("../services/commercetools/ct.cart.services");
 
+/**
+ * All the Resolvers regarding Cart
+ *
+ * 1) addToCart - TO create (if not present) and add item to cart
+ * 2) fetchCart - To fetch all line items in cart
+ * 3) deleteFromCart - To remove an line item from cart
+ * 4) updateItemQty - To update a line item quantity present in cart
+ */
 const cartResolver = {
   /**
    * To Add Item to cart and Create cart if not exist
@@ -34,7 +44,7 @@ const cartResolver = {
    */
   fetchCart: async (parent, { cart_id }, { token }) => {
     try {
-      const data = await getLineItems(cart_id);
+      const data = await getLineItems({cart_id, token});
       console.log(data);
       return data;
     } catch (error) {
@@ -47,10 +57,6 @@ const cartResolver = {
    * To Remove a line item from cart
    */
   deleteFromCart: async (parent, { input }, { req, res }) => {
-    console.log(
-      "🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 ~ file: cartResolver.js:50 ~ deleteFromCart: ~ input:",
-      input
-    );
     try {
       const data = await deleteLineItem({
         cart_id: input.cart_id,
@@ -62,6 +68,37 @@ const cartResolver = {
       console.log(error);
     }
   },
+
+  /**
+   * Update line item quantity
+   */
+  updateItemQty: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await updateLineItemQty({
+        cart_id: input.cart_id,
+        version: input.version,
+        lineItem_id: input.item_id,
+        quantity: input.quantity,
+      });
+      return data
+    } catch (error) {
+      console.log("🚀 ~ file: cartResolver.js:83 ~ updateItemQty: ~ error:", error)
+      throw error
+    }
+  },
+
+  /**
+   * To Update Shipping Address to the Cart
+   * 
+   */
+  addShippingAddr: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await addShippingAddress(input);
+      return data
+    } catch (error) {
+      
+    }
+  }
 };
 
 module.exports = { cartResolver };
