@@ -89,6 +89,7 @@ const addProductToCart = async ({ sku, qty = 1, cart_id, version }) => {
       version: body.version,
       lineItems: body.lineItems,
       totalPrice: body.totalPrice,
+      anonymousId: body.anonymousId,
     };
   } catch (error) {
     console.log(
@@ -150,6 +151,7 @@ const deleteLineItem = async ({ cart_id, version, lineItem_id }) => {
       version: body.version,
       lineItems: body.lineItems,
       totalPrice: body.totalPrice,
+      anonymousId: body.anonymousId,
     };
   } catch (error) {
     console.log(
@@ -178,7 +180,7 @@ const deleteCartById = async (cart_id, version) => {
   );
 };
 
-// deleteCartById("10165613-3bff-47e8-9181-6b4999b625b8", 1);
+// deleteCartById("151d3a18-3c10-4f6a-88e3-928f60379a9c", 55);
 
 module.exports = {
   createNewCart,

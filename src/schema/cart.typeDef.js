@@ -25,6 +25,7 @@ type CartResponse{
     version: Int
     lineItems: [Products]
     totalPrice: PriceValues
+    anonymousId: String
 }
 
 

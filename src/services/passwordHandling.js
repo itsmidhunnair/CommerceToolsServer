@@ -19,8 +19,10 @@ async function hashPassword(password) {
   const hash = await bcrypt
     .hash(password, `${process.env.ENC_SALT}`)
     .then((hash) => hash);
+  console.log(hash.replace(process.env.ENC_SALT, ""));
   return hash.replace(process.env.ENC_SALT, "");
 }
+// console.log(hashPassword("itsmidhunnair@gmail.com"));
 
 /**
  * To verify HASH PASSWORD
