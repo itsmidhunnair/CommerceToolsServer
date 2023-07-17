@@ -232,12 +232,28 @@ const addShippingAddress = async ({
   streetName,
 }) => {
   try {
-    const { body } = adminApiRoot
+    const data = await adminApiRoot
       .carts()
       .withId({ ID: cart_id })
       .post({
         body: {
           version,
+          actions: [
+            {
+              action: "setCustomerEmail",
+              email,
+            },
+          ],
+        },
+      })
+      .execute();
+    console.log("🚀 ~ file: ct.cart.services.js:250 ~ data:", data);
+    const { body } = await adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version: data.body.version,
           actions: [
             {
               action: "setShippingAddress",
@@ -263,6 +279,131 @@ const addShippingAddress = async ({
     return body;
   } catch (error) {
     console.log("🚀 ~ file: ct.cart.services.js:264 ~ error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Update Billing Address to Cart
+ * @param {{cart_id, version, building,city,country,email,firstName,lastName,mobile,postCode,salutation,state,streetName}}
+ */
+const addBillingAddress = async ({
+  cart_id,
+  version,
+  building,
+  city,
+  country,
+  email,
+  firstName,
+  lastName,
+  mobile,
+  postalCode,
+  salutation,
+  state,
+  streetName,
+}) => {
+  try {
+    const { body } = await adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version,
+          actions: [
+            {
+              action: "setBillingAddress",
+              address: {
+                salutation,
+                firstName,
+                lastName,
+                email,
+                mobile,
+                building,
+                streetName,
+                city,
+                postalCode,
+                // state,
+                country,
+              },
+            },
+          ],
+        },
+      })
+      .execute();
+    console.log("🚀 ~ file: ct.cart.services.js:261 ~ body:", body);
+    return body;
+  } catch (error) {
+    console.log("🚀 ~ file: ct.cart.services.js:264 ~ error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Add Shipping Method to cart based on Shipping Method ID
+ *
+ * @param {{ cart_id:String, version:Int, method_id:String }}
+ *
+ */
+const addShippingMethod = async ({ cart_id, version, method_id }) => {
+  try {
+    const { body } = await adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version,
+          actions: [
+            {
+              action: "setShippingMethod",
+              shippingMethod: {
+                id: method_id,
+                typeId: "shipping-method",
+              },
+            },
+          ],
+        },
+      })
+      .execute();
+    return body;
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:301 ~ addShippingMethod ~ error:",
+      error
+    );
+    throw error;
+  }
+};
+
+/**
+ * To Place Order & generate order id
+ * @param {{ cart_id:String, version:Int }}
+ */
+const createOrder = async ({ cart_id, version }) => {
+  try {
+    const { body } = await adminApiRoot
+      .orders()
+      .post({
+        body: {
+          version,
+          cart: {
+            id: cart_id,
+            typeId: "cart",
+          },
+          orderNumber: uuidv4(),
+        },
+      })
+      .execute();
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:378 ~ createOrder ~ body:",
+      body
+    );
+    return body;
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:380 ~ createOrder ~ error:",
+      error
+    );
+    return error;
   }
 };
 
@@ -294,4 +435,7 @@ module.exports = {
   deleteLineItem,
   updateLineItemQty,
   addShippingAddress,
+  addShippingMethod,
+  addBillingAddress,
+  createOrder,
 };

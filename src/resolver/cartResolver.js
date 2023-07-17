@@ -6,6 +6,9 @@ const {
   deleteLineItem,
   updateLineItemQty,
   addShippingAddress,
+  addShippingMethod,
+  addBillingAddress,
+  createOrder,
 } = require("../services/commercetools/ct.cart.services");
 
 /**
@@ -44,7 +47,7 @@ const cartResolver = {
    */
   fetchCart: async (parent, { cart_id }, { token }) => {
     try {
-      const data = await getLineItems({cart_id, token});
+      const data = await getLineItems({ cart_id, token });
       console.log(data);
       return data;
     } catch (error) {
@@ -80,25 +83,73 @@ const cartResolver = {
         lineItem_id: input.item_id,
         quantity: input.quantity,
       });
-      return data
+      return data;
     } catch (error) {
-      console.log("🚀 ~ file: cartResolver.js:83 ~ updateItemQty: ~ error:", error)
-      throw error
+      console.log(
+        "🚀 ~ file: cartResolver.js:83 ~ updateItemQty: ~ error:",
+        error
+      );
+      throw error;
     }
   },
 
   /**
    * To Update Shipping Address to the Cart
-   * 
+   *
    */
   addShippingAddr: async (parent, { input }, { req, res }) => {
     try {
       const data = await addShippingAddress(input);
-      return data
+      return data;
     } catch (error) {
-      
+      console.log(
+        "🚀 ~ file: cartResolver.js:99 ~ addShippingAddr: ~ error:",
+        error
+      );
+      throw error;
     }
-  }
+  },
+
+  /**
+   * To Update Billing Address to the Cart
+   *
+   */
+  addBillingAddr: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await addBillingAddress(input);
+      return data;
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: cartResolver.js:99 ~ addShippingAddr: ~ error:",
+        error
+      );
+      throw error;
+    }
+  },
+
+  /**
+   * To update shipping method to the cart
+   */
+  addShippingMeth: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await addShippingMethod(input);
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  /**
+   * Place Order from cart
+   */
+  placeOrder: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await createOrder({
+        cart_id: input.cart_id,
+        version: input.version,
+      });
+    } catch (error) {}
+  },
 };
 
 module.exports = { cartResolver };
