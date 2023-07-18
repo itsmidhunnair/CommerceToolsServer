@@ -3,6 +3,8 @@ const {
   apiRoot,
 } = require("../../config/commercetools/clientApiRoot");
 
+const crypto = require("crypto");
+
 const { v4: uuidv4 } = require("uuid");
 
 /**
@@ -380,6 +382,15 @@ const addShippingMethod = async ({ cart_id, version, method_id }) => {
  */
 const createOrder = async ({ cart_id, version }) => {
   try {
+    const orderNumber = crypto.randomInt(10 ** 7, 10 ** 10 - 1);
+    // const orderNumber = crypto
+    //   .randomInt(0, 10 ** 8 - 1)
+    //   .toString()
+    //   .padStart(8, "0");
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:387 ~ createOrder ~ orderNumber:",
+      orderNumber
+    );
     const { body } = await adminApiRoot
       .orders()
       .post({
@@ -389,7 +400,7 @@ const createOrder = async ({ cart_id, version }) => {
             id: cart_id,
             typeId: "cart",
           },
-          orderNumber: uuidv4(),
+          orderNumber: `CT${orderNumber}`,
         },
       })
       .execute();

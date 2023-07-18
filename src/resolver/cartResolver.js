@@ -148,6 +148,7 @@ const cartResolver = {
         cart_id: input.cart_id,
         version: input.version,
       });
+      return data
     } catch (error) {}
   },
 };

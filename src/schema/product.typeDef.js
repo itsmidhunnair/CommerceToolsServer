@@ -89,6 +89,7 @@ const productTypeDefs = `#graphql
         products(search:String): [Products!]
         product(id: ID!): Products 
         suggest(search: String): [Suggest]
+        verify: JSON
     }
 `;
 

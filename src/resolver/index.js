@@ -3,9 +3,10 @@ const { userResolver } = require("./userResolver");
 const { productResolver } = require("./productResolver");
 
 const { cartResolver } = require("./cartResolver");
+const { orderResolver } = require("./orderResolver");
 
 const resolvers = {
-  Query: { ...productResolver },
+  Query: { ...productResolver, ...orderResolver },
   Mutation: {
     ...userResolver,
     ...cartResolver,

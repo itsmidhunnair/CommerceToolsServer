@@ -3,3 +3,13 @@ create Cart with anonymous_id
 > Add shipping addr in cart
 > Create Order
 > .then >>>> Create customer with that anonymous_id
+
+
+
+/******* 
+> User Login
+    >> Saved Access Token
+> Access Token sent in cookie to server
+> Get email & userid from User Details (in /me route) Based on Access Token
+> find all order with the email map it and append user id with each order
+> fetch my orders from /me route
