@@ -9,6 +9,7 @@ const {
   addShippingMethod,
   addBillingAddress,
   createOrder,
+  linkCustomerEmailToCart,
 } = require("../services/commercetools/ct.cart.services");
 
 /**
@@ -94,6 +95,27 @@ const cartResolver = {
   },
 
   /**
+   * To add customer Email to Cart
+   * @returns
+   */
+  addCustomerEmail: async (parent, { input }, { req, res }) => {
+    try {
+      const data = await linkCustomerEmailToCart(input);
+      console.log(
+        "🚀 ~ file: cartResolver.js:103 ~ addCustomerEmail: ~ data:",
+        data
+      );
+      return data;
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: cartResolver.js:106 ~ addCustomerEmail: ~ error:",
+        error
+      );
+      throw error;
+    }
+  },
+
+  /**
    * To Update Shipping Address to the Cart
    *
    */
@@ -148,7 +170,7 @@ const cartResolver = {
         cart_id: input.cart_id,
         version: input.version,
       });
-      return data
+      return data;
     } catch (error) {}
   },
 };

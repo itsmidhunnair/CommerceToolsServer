@@ -215,6 +215,37 @@ const updateLineItemQty = async ({
 };
 
 /**
+ * Link Customer email with the cart
+ * @param {{email:String, cart_id:String, version:String}}
+ */
+const linkCustomerEmailToCart = async ({ cart_id, version, email }) => {
+  try {
+    const { body } = await adminApiRoot
+      .carts()
+      .withId({ ID: cart_id })
+      .post({
+        body: {
+          version,
+          actions: [
+            {
+              action: "setCustomerEmail",
+              email,
+            },
+          ],
+        },
+      })
+      .execute();
+    console.log("🚀 ~ file: ct.cart.services.js:250 ~ data:", body);
+    return body;
+  } catch (error) {
+    console.log(
+      "🚀 ~ file: ct.cart.services.js:240 ~ linkCustomerEmailToCart ~ error:",
+      error
+    );
+  }
+};
+
+/**
  * Update Shipping Address to Cart
  * @param {{cart_id, version, building,city,country,email,firstName,lastName,mobile,postCode,salutation,state,streetName}}
  */
@@ -234,28 +265,12 @@ const addShippingAddress = async ({
   streetName,
 }) => {
   try {
-    const data = await adminApiRoot
-      .carts()
-      .withId({ ID: cart_id })
-      .post({
-        body: {
-          version,
-          actions: [
-            {
-              action: "setCustomerEmail",
-              email,
-            },
-          ],
-        },
-      })
-      .execute();
-    console.log("🚀 ~ file: ct.cart.services.js:250 ~ data:", data);
     const { body } = await adminApiRoot
       .carts()
       .withId({ ID: cart_id })
       .post({
         body: {
-          version: data.body.version,
+          version: version,
           actions: [
             {
               action: "setShippingAddress",
@@ -449,4 +464,5 @@ module.exports = {
   addShippingMethod,
   addBillingAddress,
   createOrder,
+  linkCustomerEmailToCart,
 };

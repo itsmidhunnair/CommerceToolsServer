@@ -39,6 +39,7 @@ input ShippingMethod{
 input CartInfo{
     cart_id: String!
     version: Int!
+    email: String
 }
 
 type CartResponse{
@@ -47,6 +48,7 @@ type CartResponse{
     lineItems: [Products]
     totalPrice: PriceValues
     anonymousId: String
+    customerEmail: String
     shippingAddress: AddressRes
     taxedPrice: TaxPrice
     totalLineItemQuantity: Int
@@ -80,6 +82,7 @@ type Mutation{
     fetchCart(cart_id:String): CartResponse
     deleteFromCart(input: EditLineItem): CartResponse
     updateItemQty(input: EditLineItem): CartResponse
+    addCustomerEmail(input: CartInfo!): CartResponse
     addShippingAddr(input: Address): CartResponse
     addBillingAddr(input: Address): CartResponse
     addShippingMeth(input: ShippingMethod): CartResponse
